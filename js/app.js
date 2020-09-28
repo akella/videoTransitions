@@ -7,6 +7,7 @@ let activeTexture = 0;
 let currentTexture = 0;
 let transitionTimer = 0;
 let timer = 0;
+let isRunning = 0;
 
 window.addEventListener("load", () => {
   // set up our WebGL context and append the canvas to our wrapper
@@ -31,6 +32,16 @@ window.addEventListener("load", () => {
       },
       timer: {
         name: "uTimer",
+        type: "1f",
+        value: 0,
+      },
+      to: {
+        name: "uTo",
+        type: "1f",
+        value: 0,
+      },
+      from: {
+        name: "uFrom",
         type: "1f",
         value: 0,
       },
@@ -66,9 +77,45 @@ window.addEventListener("load", () => {
       //     },
       //   });
       // });
+
       navElements.forEach(nav=>{
         nav.addEventListener('click',(event)=>{
-          console.log(event.target.getAttribute('data-nav'));
+          if(isRunning) return;
+          isRunning = true
+          let to = event.target.getAttribute('data-nav');
+          multiTexturesPlane.uniforms.to.value = to;
+
+          let fake = {progress:0}
+          gsap.to(fake, {
+            duration: duration,
+            progress:  1,
+            easing: 'power2.in',
+            onStart: () => {
+              multiTexturesPlane.videos[to].play();
+              currentTexture = to;
+            },
+            onUpdate:()=>{
+              if(fake.progress===1){
+                multiTexturesPlane.uniforms.from.value = to;
+              }
+              multiTexturesPlane.uniforms.transitionTimer.value = fake.progress
+            },
+            onComplete: () => {
+    
+              multiTexturesPlane.uniforms.from.value = to;
+              // multiTexturesPlane.uniforms.transitionTimer.value = 0;
+              
+
+              multiTexturesPlane.videos[
+                (currentTexture + length - 1) % length
+              ].pause();
+              multiTexturesPlane.videos[
+                (currentTexture + length + 1) % length
+              ].pause();
+              isRunning = false;
+            },
+          });
+
         })
       })
 
@@ -94,7 +141,7 @@ window.addEventListener("load", () => {
     })
     .onRender(() => {
       timer += 0.001;
-
+      console.log(multiTexturesPlane.uniforms.from.value,multiTexturesPlane.uniforms.transitionTimer.value);
       // multiTexturesPlane.uniforms.transitionTimer.value = transitionTimer;
       multiTexturesPlane.uniforms.timer.value = timer;
     });
