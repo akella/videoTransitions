@@ -22,8 +22,8 @@ window.addEventListener("load", () => {
   const duration = planeElements[0].getAttribute("data-duration") || 2;
   // set our initial parameters (basic uniforms)
   const params = {
-    vertexShader: vertex,
-    fragmentShader: fragment,
+    vertexShaderID: "vert",
+    fragmentShaderID: "frag",
     uniforms: {
       transitionTimer: {
         name: "uTransitionTimer",
@@ -101,11 +101,7 @@ window.addEventListener("load", () => {
               multiTexturesPlane.uniforms.transitionTimer.value = fake.progress
             },
             onComplete: () => {
-    
               multiTexturesPlane.uniforms.from.value = to;
-              // multiTexturesPlane.uniforms.transitionTimer.value = 0;
-              
-
               multiTexturesPlane.videos[
                 (currentTexture + length - 1) % length
               ].pause();

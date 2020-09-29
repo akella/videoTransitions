@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+		<title>Video Transition</title>
+	    <meta name="description" content="">
+
+		<link rel="stylesheet" href="css/style.css">
+	</head>
+	<body>
+        <div id="intro">
+            <button>play (or any user interaction)</button>
+        </div>
+        <div id="nav">
+            <a class="js-nav" href="#" data-nav="0">1111</a>
+            <a class="js-nav" href="#" data-nav="1">222</a>
+            <a class="js-nav" href="#" data-nav="2">333</a>
+        </div>
+        <div id="globalnav">
+            <a href="index1.html">demo 1</a>
+            <a href="index2.html">demo 1</a>
+            <!--<a href="index3.html">demo 1</a>
+            <a href="index4.html">demo 1</a>
+            <a href="index5.html">demo 1</a>-->
+        </div> 
+		<div id="canvas"></div>
+        <div class="wrapper">
+            <div class="plane" data-duration="1">
+                <video src="videos/1.mp4" data-sampler="firstTexture"></video>
+                <video src="videos/3.mp4" data-sampler="secondTexture"></video>
+                <video src="videos/4.mp4" data-sampler="thirdTexture"></video>
+            </div>
+        </div>
+        <script id="vert"  type="text">precision mediump float;
+
+            // default mandatory variables
+            attribute vec3 aVertexPosition;
+            attribute vec2 aTextureCoord;
+
+            uniform mat4 uMVMatrix;
+            uniform mat4 uPMatrix;
+
+            // our texture matrices
+            // displacement texture does not need to use them
+            uniform mat4 firstTextureMatrix;
+            uniform mat4 secondTextureMatrix;
+
+            // custom variables
+            varying vec3 vVertexPosition;
+            varying vec2 vTextureCoord;
+            varying vec2 vFirstTextureCoord;
+            varying vec2 vSecondTextureCoord;
+
+            // custom uniforms
+            uniform float uTransitionTimer;
+
+            void main() {
+                gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+
+                // varyings
+                // use original texture coords for our displacement
+                vTextureCoord = aTextureCoord;
+                // use texture matrices for our videos
+                vFirstTextureCoord = (firstTextureMatrix * vec4(aTextureCoord, 0.0, 1.0)).xy;
+                vSecondTextureCoord = (secondTextureMatrix * vec4(aTextureCoord, 0.0, 1.0)).xy;
+                vVertexPosition = aVertexPosition;
+            }
+        </script>
+        <script id="frag" type="text">precision mediump float;
+
+            precision mediump float;
+
+varying vec3 vVertexPosition;
+varying vec2 vTextureCoord;
+varying vec2 vFirstTextureCoord;
+varying vec2 vSecondTextureCoord;
+
+// custom uniforms
+uniform float uTransitionTimer;
+uniform float uTimer;
+uniform float uTo;
+uniform float uFrom;
+
+// our textures samplers
+// notice how it matches our data-sampler attributes
+uniform sampler2D firstTexture;
+uniform sampler2D secondTexture;
+uniform sampler2D thirdTexture;
+uniform sampler2D displacement;
+
+
+const float PI = 3.141592653589793;
+
+
+
+vec4 getTextureByIndex(float index, vec2 vUv){
+    vec4 result;
+    if(index==0.){
+        result = texture2D(firstTexture,vUv);
+    }
+    if(index==1.){
+        result = texture2D(secondTexture,vUv);
+    }
+    if(index==2.){
+        result = texture2D(thirdTexture,vUv);
+    }
+    return result;
+}
+mat2 rotate(float a) {
+    float s = sin(a);
+    float c = cos(a);
+    return mat2(c, -s, s, c);
+}
+void main() {
+
+    float progress = fract(uTransitionTimer);
+    float currentTexture = mod(floor(uTransitionTimer),3.);
+    float nextTexture =  mod(floor(uTransitionTimer) +1., 3.);
+
+    // vec4 current = getTextureByIndex(uFrom, vTextureCoord);
+    // vec4 next = getTextureByIndex(uT, vTextureCoord);
+    
+    vec4 fcolor;
+
+    float p1 = progress - 1.;
+    float p = progress;
+    vec2 uv = vTextureCoord;
+
+    vec2 position = step(0.,p)*uv + step(0.,-p)*(1. - uv);
+
+    // texture 1
+    float dx1 = p*0.8;
+    float vert = abs(p*0.3);
+    dx1 -= step(0.2 - vert,position.x/2.)*0.3*p;
+    dx1 -= step(0.4 - vert,position.x/2.)*0.3*p;
+    dx1 += step(0.6 - vert,position.x/2.)*0.3*p;
+    dx1 += step(0.8 - vert,position.x/2.)*0.3*p;
+    vec4 tex1 = getTextureByIndex(uFrom,vec2(vFirstTextureCoord.x + dx1,vFirstTextureCoord.y));
+    float bounds = step(0., 1. - (uv.x/2. + p))*step(0., uv.x/2. + p);
+    fcolor = tex1*bounds;
+
+
+
+    // // texture 2
+    float dx2 = p1*0.8;
+    float vert1 = abs(p1*0.3);
+    dx2 -= step(0.2 + vert1,position.x/2.)*0.3*p1;
+    dx2 -= step(0.4 + vert1,position.x/2.)*0.3*p1;
+    dx2 += step(0.6 + vert1,position.x/2.)*0.3*p1;
+    dx2 += step(0.8 + vert1,position.x/2.)*0.3*p1;
+    vec4 tex2 = getTextureByIndex(uTo,vec2(vFirstTextureCoord.x + dx2,vFirstTextureCoord.y));
+    float bounds1 = step(0., 1. - (uv.x/2. + p1))*step(0., uv.x/2. + p1);
+    fcolor += tex2*bounds1;
+
+
+    gl_FragColor = fcolor;
+
+    // gl_FragColor = mix(current,next,progress);
+    // gl_FragColor = vec4(vec3(val),1.);
+}
+        </script>
+		<script src="js/app.js"></script>
+	</body>
+</html>
