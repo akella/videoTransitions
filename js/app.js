@@ -30,6 +30,11 @@ window.addEventListener("load", () => {
         type: "1f",
         value: 0,
       },
+      fadeIn: {
+        name: "uFadeIn",
+        type: "1f",
+        value: 0,
+      },
       timer: {
         name: "uTimer",
         type: "1f",
@@ -80,9 +85,10 @@ window.addEventListener("load", () => {
 
       navElements.forEach(nav=>{
         nav.addEventListener('click',(event)=>{
-          if(isRunning) return;
-          isRunning = true
           let to = event.target.getAttribute('data-nav');
+          if(isRunning || to===currentTexture) return;
+          isRunning = true
+          
           multiTexturesPlane.uniforms.to.value = to;
 
           let fake = {progress:0}
@@ -122,6 +128,11 @@ window.addEventListener("load", () => {
           // fade out animation
           gsap.to('#intro',{duration:0.1,autoAlpha:0.})
             document.body.classList.add("video-started");
+
+          gsap.to(multiTexturesPlane.uniforms.fadeIn,{
+            duration: 1,
+            value: 1
+          })
 
           // play all videos to force uploading the first frame of each texture
           multiTexturesPlane.playVideos();
