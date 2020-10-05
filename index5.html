@@ -55,6 +55,7 @@
 
             // custom uniforms
             uniform float uTransitionTimer;
+            
 
             void main() {
                 gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
@@ -82,6 +83,7 @@
             uniform float uTimer;
             uniform float uTo;
             uniform float uFrom;
+            uniform float uFadeIn;
 
             // our textures samplers
             // notice how it matches our data-sampler attributes
@@ -117,10 +119,13 @@
 
                 float progress = fract(uTransitionTimer);
 
-                vec4 current = getTextureByIndex(uFrom, vFirstTextureCoord);
-                vec4 next = getTextureByIndex(uTo, vFirstTextureCoord);
+                vec2 uv = (vFirstTextureCoord - vec2(0.5))*(0.2 + 0.8*uFadeIn) + vec2(0.5) + 0.6*vec2(0.,1. - uFadeIn);
+
+                vec4 current = getTextureByIndex(uFrom, uv);
+                vec4 next = getTextureByIndex(uTo, uv);
                 float spread = 0.05;
-                vec2 uv = vFirstTextureCoord;
+                
+                float mask = step(vTextureCoord.y,uFadeIn);
 
 
                 float col = smoothstep(0.5-spread,0.5+spread,uv.x);
@@ -131,7 +136,7 @@
                     final = 1. - min((1. - col),(1. - col1));
                 }
 
-                gl_FragColor = mix(current,next,final);
+                gl_FragColor = mix(vec4(0.,0.,0.,1.),mix(current,next,final), mask);
             }
         </script>
 		<script src="js/app.js"></script>

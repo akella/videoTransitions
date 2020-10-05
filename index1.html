@@ -110,7 +110,7 @@
 
                 vec2 center = vec2(0.5);
                 vec2 centerVector = vFirstTextureCoord - center;
-                vec2 vUv = (vFirstTextureCoord - vec2(0.5))*(3.5 - 2.5*uFadeIn) + vec2(0.5) + 0.6*vec2(0.,1. - uFadeIn);
+                vec2 vUv = (vFirstTextureCoord - vec2(0.5))*(0.2 + 0.8*uFadeIn) + vec2(0.5) + 0.6*vec2(0.,1. - uFadeIn);
                 float mask = step(vTextureCoord.y,uFadeIn);
 
 

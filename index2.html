@@ -82,6 +82,7 @@ uniform float uTransitionTimer;
 uniform float uTimer;
 uniform float uTo;
 uniform float uFrom;
+uniform float uFadeIn;
 
 // our textures samplers
 // notice how it matches our data-sampler attributes
@@ -113,6 +114,8 @@ void main() {
     float progress = fract(uTransitionTimer);
     float currentTexture = mod(floor(uTransitionTimer),3.);
     float nextTexture =  mod(floor(uTransitionTimer) +1., 3.);
+    vec2 newUV = (vFirstTextureCoord - vec2(0.5))*(0.2 + 0.8*uFadeIn) + vec2(0.5) + 0.6*vec2(0.,1. - uFadeIn);
+    float mask = step(vTextureCoord.y,uFadeIn);
     
     vec4 fcolor;
 
@@ -128,7 +131,7 @@ void main() {
     dx1 -= step(0.4 - vert,position.x/2.)*0.3*p;
     dx1 += step(0.6 - vert,position.x/2.)*0.3*p;
     dx1 += step(0.8 - vert,position.x/2.)*0.3*p;
-    vec4 tex1 = getTextureByIndex(uFrom,vec2(vFirstTextureCoord.x + dx1,vFirstTextureCoord.y));
+    vec4 tex1 = getTextureByIndex(uFrom,vec2(newUV.x + dx1,newUV.y));
     float bounds = step(0., 1. - (uv.x/2. + p))*step(0., uv.x/2. + p);
     fcolor = tex1*bounds;
 
@@ -138,12 +141,13 @@ void main() {
     dx2 -= step(0.4 + vert1,position.x/2.)*0.3*p1;
     dx2 += step(0.6 + vert1,position.x/2.)*0.3*p1;
     dx2 += step(0.8 + vert1,position.x/2.)*0.3*p1;
-    vec4 tex2 = getTextureByIndex(uTo,vec2(vFirstTextureCoord.x + dx2,vFirstTextureCoord.y));
+    vec4 tex2 = getTextureByIndex(uTo,vec2(newUV.x + dx2,newUV.y));
     float bounds1 = step(0., 1. - (uv.x/2. + p1))*step(0., uv.x/2. + p1);
     fcolor += tex2*bounds1;
 
 
     gl_FragColor = fcolor;
+    gl_FragColor = mix(vec4(0.,0.,0.,1.),gl_FragColor, mask);
 }
         </script>
 		<script src="js/app.js"></script>

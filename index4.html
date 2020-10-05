@@ -92,6 +92,7 @@
             uniform float uTimer;
             uniform float uTo;
             uniform float uFrom;
+            uniform float uFadeIn;
 
             // our textures samplers
             // notice how it matches our data-sampler attributes
@@ -153,6 +154,7 @@
 
                 vec4 current = getTextureByIndex(uFrom, vFirstTextureCoord);
                 vec4 next = getTextureByIndex(uTo, vFirstTextureCoord);
+                float mask = step(vTextureCoord.y,uFadeIn);
 
 
                 vec2 center = vec2(Linear_ease(0.25, 0.5, 1.0, progress), 0.5);
@@ -176,6 +178,7 @@
                 }
 
                 gl_FragColor = vec4(color / total, 1.0);
+                gl_FragColor = mix(vec4(0.,0.,0.,1.),gl_FragColor, mask);
             }
         </script>
 		<script src="js/app.js"></script>
