@@ -2,11 +2,11 @@
 
 Some experimental video transitions using Curtain.js and shaders.
 
-![Triangles](https://tympanus.net/codrops/wp-content/uploads/2020/08/Triangles_Featured.jpg)
+![image]()
 
-[Article on Codrops](https://tympanus.net/codrops/?p=50876)
+[Article on Codrops](https://tympanus.net/codrops/?p=51333)
 
-[Demo](https://github.com/akella/PolygonTransitions/archive/master.zip)
+[Demo](https://github.com/akella/videoTransitions/)
 
 
 ## Installation
@@ -20,7 +20,13 @@ Or run without installation:
 ```
 npx parcel index.html
 ```
-After that demo should be available on http://localhost:1234.
+After that the demo should be available on http://localhost:1234.
+
+
+## Credits
+
+- Videos from [MixKit](https://mixkit.co/free-stock-video/) and [Coverr](https://coverr.co/)
+- Play icon by [Smashicons](https://www.flaticon.com/authors/smashicons)
 
 ## Misc
 

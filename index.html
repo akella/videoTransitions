@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        <title>WebGL Video Transitions | Demo 1 | Codrops</title>
+        <meta name="description" content="Some WebGL video transitions with different effects using curtain.js" />
+        <meta name="keywords" content="curtain.js, webgl, video transition, animation, shader, javascript, web design" />
+        <meta name="author" content="Codrops" />
+        <link rel="shortcut icon" href="favicon.ico">
+        <link rel="stylesheet" href="https://use.typekit.net/ylw1llk.css">
+        <link rel="stylesheet" type="text/css" href="css/style.css" />
+        <script>document.documentElement.className="js";var supportsCssVars=function(){var e,t=document.createElement("style");return t.innerHTML="root: { --tmp-var: bold; }",document.head.appendChild(t),e=!!(window.CSS&&window.CSS.supports&&window.CSS.supports("font-weight","var(--tmp-var)")),t.parentNode.removeChild(t),e};supportsCssVars()||alert("Please view this demo in a modern browser that supports CSS Variables.");</script>
+        <!--script src="//tympanus.net/codrops/adpacks/analytics.js"></script-->
+    </head>
+    <body class="demo-1">
+        <main>
+            <div class="frame">
+                <h1 class="frame__title">WebGL Video Transitions with <a href="">curtain.js</h1>
+                <nav class="frame__links">
+                    <a href="https://tympanus.net/Tutorials/Mirrors/">Previous demo</a>
+                    <a href="https://tympanus.net/codrops/?p=51333">Article</a>
+                    <a href="https://github.com/akella/videoTransitions">GitHub</a>
+                </nav>
+                <nav class="frame__demos">
+                    <span class="frame__demos-text">More demos: </span>
+                    <a href="index.html" class="frame__demo frame__demo--current">1</a>
+                    <a href="index2.html" class="frame__demo">2</a>
+                    <a href="index3.html" class="frame__demo">3</a>
+                    <a href="index4.html" class="frame__demo">4</a>
+                    <a href="index5.html" class="frame__demo">5</a>
+                </nav>
+                <button class="frame__button" id="intro"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" width="60" height="60"><path d="M45.563 29.174l-22-15A1 1 0 0022 15v30a.999.999 0 001.563.826l22-15a1 1 0 000-1.652zM24 43.107V16.893L43.225 30 24 43.107z"/><path d="M30 0C13.458 0 0 13.458 0 30s13.458 30 30 30 30-13.458 30-30S46.542 0 30 0zm0 58C14.561 58 2 45.439 2 30S14.561 2 30 2s28 12.561 28 28-12.561 28-28 28z"/></svg></button>
+                <div class="frame__content">
+                    <h2 class="frame__content-title">Ungovernable</h2>
+                    <p class="frame__content-text">Select another video here:</p>
+                    <nav class="frame__switch" id="nav">
+                        <a class="frame__switch-item js-nav" data-nav="0">Wake up</a>
+                        <a class="frame__switch-item js-nav" data-nav="1">Rejoice</a>
+                        <a class="frame__switch-item js-nav" data-nav="2">Breathe</a>
+                    </nav>
+                </div>
+            </div>
+            <div class="video">
+                <div id="canvas"></div>
+                <div class="wrapper">
+                    <div class="plane" data-duration="2.5">
+                        <video src="videos/1.mp4" data-sampler="firstTexture" preload="auto"></video>
+                        <video src="videos/2.mp4" data-sampler="secondTexture"></video>
+                        <video src="videos/3.mp4" data-sampler="thirdTexture"></video>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <script id="vert"  type="text">precision mediump float;
+
+            // default mandatory variables
+            attribute vec3 aVertexPosition;
+            attribute vec2 aTextureCoord;
+
+            uniform mat4 uMVMatrix;
+            uniform mat4 uPMatrix;
+
+            // our texture matrices
+            // displacement texture does not need to use them
+            uniform mat4 firstTextureMatrix;
+            uniform mat4 secondTextureMatrix;
+
+            // custom variables
+            varying vec3 vVertexPosition;
+            varying vec2 vTextureCoord;
+            varying vec2 vFirstTextureCoord;
+            varying vec2 vSecondTextureCoord;
+
+            // custom uniforms
+            uniform float uTransitionTimer;
+
+            void main() {
+                gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+
+                // varyings
+                // use original texture coords for our displacement
+                vTextureCoord = aTextureCoord;
+                // use texture matrices for our videos
+                vFirstTextureCoord = (firstTextureMatrix * vec4(aTextureCoord, 0.0, 1.0)).xy;
+                vSecondTextureCoord = (secondTextureMatrix * vec4(aTextureCoord, 0.0, 1.0)).xy;
+                vVertexPosition = aVertexPosition;
+            }
+        </script>
+        <script id="frag" type="text">precision mediump float;
+
+            varying vec3 vVertexPosition;
+            varying vec2 vTextureCoord;
+            varying vec2 vFirstTextureCoord;
+            varying vec2 vSecondTextureCoord;
+
+            // custom uniforms
+            uniform float uTransitionTimer;
+            uniform float uTimer;
+            uniform float uTo;
+            uniform float uFrom;
+            uniform float uFadeIn;
+
+            // our textures samplers
+            uniform sampler2D firstTexture;
+            uniform sampler2D secondTexture;
+            uniform sampler2D thirdTexture;
+            uniform sampler2D displacement;
+
+             vec4 getTextureByIndex(float index, vec2 vUv){
+                 vec4 result;
+                 if(index==0.){
+                     result = texture2D(firstTexture,vUv);
+                 }
+                 if(index==1.){
+                     result = texture2D(secondTexture,vUv);
+                 }
+                 if(index==2.){
+                     result = texture2D(thirdTexture,vUv);
+                 }
+                 return result;
+             }
+             float circle (in vec2 uv, in float radius, in float sharpness) {
+                 float dist = length(uv - vec2(0.5));
+                 return 1. - smoothstep(radius-sharpness,radius,dist);
+             }
+            void main() {
+                float progress = fract(uTransitionTimer);
+
+                vec2 center = vec2(0.5);
+                vec2 centerVector = vFirstTextureCoord - center;
+                vec2 vUv = (vFirstTextureCoord - vec2(0.5))*(0.2 + 0.8*uFadeIn) + vec2(0.5) + 0.6*vec2(0.,1. - uFadeIn);
+                float mask = step(vTextureCoord.y,uFadeIn);
+
+
+                 float circleProgress = circle(vTextureCoord, progress*0.9, 0.2);
+                 float ease = progress*(2. - progress);
+                 vec2 nextUV = vUv + centerVector * (circleProgress - 1.0) + centerVector * ( 1. - ease) * 0.;
+                 vec2 currentUV = vUv - centerVector * circleProgress*0.5 - centerVector * progress * 0.2;
+
+                 float currentTexture = mod(uFrom,3.);
+                 float nextTexture =  mod(uTo, 3.);
+
+                 vec4 current = getTextureByIndex(currentTexture, currentUV);
+                 vec4 next = getTextureByIndex(nextTexture, nextUV);
+
+                 gl_FragColor = mix(vec4(0.,0.,0.,0),mix(current,next,circleProgress), mask);
+            }
+        </script>
+        <script src="js/app.js"></script>
+        <!--script src="https://tympanus.net/codrops/adpacks/cda.js"></script-->
+    </body>
+</html>

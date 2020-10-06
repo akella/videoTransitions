@@ -13,6 +13,7 @@ window.addEventListener("load", () => {
   // set up our WebGL context and append the canvas to our wrapper
   const curtains = new Curtains({
     container: "canvas",
+    alpha: true,
     pixelRatio: Math.min(1.5, window.devicePixelRatio), // limit pixel ratio for performance
   });
 

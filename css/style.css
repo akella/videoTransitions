@@ -1,10 +1,225 @@
-body{
+*,
+*::after,
+*::before {
+    box-sizing: border-box;
+}
+
+:root {
+    font-size: 15px;
+}
+
+body {
+    margin: 0;
+    --color-text: #fff;
+    --color-bg: #111;
+    --color-link: #fff;
+    --color-link-hover: #fff;
+    color: var(--color-text);
+    background-color: var(--color-bg);
+    font-family: navigo, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow: hidden;
+    background-image: linear-gradient(rgba(120,120,120,0.2),rgba(120,120,120,0.2)), url(../img/bg.jpg);
+    background-size: cover;
+}
+
+.demo-2 {
+    background-image: linear-gradient(rgba(120,120,120,0.2),rgba(120,120,120,0.2)), url(../img/bg2.jpg);
+}
+
+.demo-3 {
+    background-image: linear-gradient(rgba(0,0,0,0.3),rgba(0,0,0,0.3)), url(../img/bg3.jpg);
+}
+
+.demo-4 {
+    background-image: linear-gradient(rgba(120,120,120,0.2),rgba(120,120,120,0.2)), url(../img/bg7.jpg);
+}
+
+.demo-5 {
+    background-image: linear-gradient(rgba(120,120,120,0.2),rgba(120,120,120,0.2)), url(../img/bg5.jpg);
+}
+
+/* Page Loader */
+.js .loading::before,
+.js .loading::after {
+    content: '';
+    position: fixed;
+    z-index: 1000;
+}
+
+.js .loading::before {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: var(--color-bg);
+}
+
+.js .loading::after {
+    top: 50%;
+    left: 50%;
+    width: 60px;
+    height: 60px;
+    margin: -30px 0 0 -30px;
+    border-radius: 50%;
+    opacity: 0.4;
+    background: var(--color-link);
+    animation: loaderAnim 0.7s linear infinite alternate forwards;
+
+}
+
+@keyframes loaderAnim {
+    to {
+        opacity: 1;
+        transform: scale3d(0.5,0.5,1);
+    }
+}
+
+a {
+    text-decoration: none;
+    color: var(--color-link);
+    outline: none;
+    opacity: 0.7;
+}
+
+a:hover,
+a:focus {
+    color: var(--color-link-hover);
+    outline: none;
+    text-decoration: underline;
+    opacity: 1;
+}
+
+.frame {
+    padding: 3rem 5vw;
+    text-align: center;
+    z-index: 1000;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100vh;
+}
+
+.frame__title {
+    font-size: 1rem;
+    margin: 0 0 1rem;
+    font-weight: normal;
+}
+
+.frame__links {
+    display: inline;
+}
+
+.frame__links a:not(:last-child),
+.frame__demos a:not(:last-child) {
+    margin-right: 1rem;
+}
+
+.frame__demos {
+    margin: 1rem 0;
+}
+
+.frame__demos-text {
+    margin-right: 2rem;
+}
+
+.frame__demo--current,
+.frame__demo--current:hover {
+    color: var(--color-text);
+    opacity: 0.5;
+    text-decoration: underline;
+}
+
+.frame__button {
+    background: none;
+    border: 0;
     margin: 0;
     padding: 0;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    fill: #fff;
+    width: 60px;
+    height: 60px;
+    cursor: pointer;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.frame__button:focus {
+    outline: none;
+    opacity: 0.9;
+}
+
+.frame__content {
+    text-align: center;
+}
+
+.frame__content-title {
+    margin: 0;
+    padding-bottom: 1rem;
+    line-height: 1;
+    font-size: 8vw;
+    font-weight: 300;
+    font-family: ivypresto-headline, serif;
+    color: #fff;
+    position: relative;
+    text-shadow: 0 1px 6px rgba(0,0,0,0.1);
+}
+
+.frame__content-title::after {
+    content: '';
+    position: absolute;
+    width: 20%;
+    height: 1px;
+    background: #fff;
+    left: 40%;
+    top: 100%;
+}
+
+.frame__content-text {
+    max-width: 600px;
+    font-size: 1rem;
+    margin: 2rem auto 3rem;
+}
+
+.frame__switch-item {
+    cursor: pointer;
+    padding: 0.85rem 1.25rem;
+    border: 1px solid #fff;
+    font-family: ivypresto-headline, serif;
+    font-weight: 300;
+    font-size: 1.85rem;
+    margin: 0 1rem;
+    transition: opacity 0.3s;
+}
+
+.frame__switch-item--current,
+.frame__switch-item:hover,
+.frame__switch-item:focus {
+    text-decoration: none;
+}
+
+.frame__content-text,
+.frame__switch {
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.video-started .frame__content-text,
+.video-started .frame__switch {
+    opacity: 1;
+}
+
+.video {
+    pointer-events: none;
 }
 
 #canvas {
-    /* make the canvas wrapper fits the document */
     position: absolute;
     top: 0;
     right: 0;
@@ -12,62 +227,74 @@ body{
     left: 0;
 }
 
-
 .wrapper {
     width: 100%;
     height: 100vh;
     display: flex;
+    pointer-events: none;
 }
 
 .plane {
-    /* define the size of your plane */
     width: 100vw;
     height: 100vh;
     position: relative;
     z-index: 100;
 }
 
-.plane img,.plane video {
+.plane video {
     position: absolute;
     left: 0;
     top: 0;
     width: 100px;
     display: none;
 }
-#intro{
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 1000;
-    background: #000;
-}
-#intro button{
-    transform: translate(-50%,-50%);
-    font-size: 50px;
-    left: 50%;
-    top: 50%;
-    position: absolute;
-}
-#nav{
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: 10000;
-}
-#nav a{
-    padding: 10px;
-    display: inline-block;
-    font-size: 30px;
-}
-#globalnav{
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    width: 200px;
-    height: 100px;
-    z-index: 10000;
 
+@media screen and (min-width: 53em) {
+    .frame {
+        text-align: left;
+        display: grid;
+        padding: 3rem;
+        pointer-events: none;
+        grid-template-columns: 25% 50% 25%;
+        grid-template-areas: 'title links links'
+                            '... play ...'
+                            'content content content'
+                            '... demos demos';
+    }
+    .frame__title {
+        margin: 0;
+        grid-area: title;
+    }
+    .frame__button {
+        grid-area: play;
+        align-self: end;
+        justify-self: center;
+    }
+    .frame__content {
+        grid-area: content;
+        align-self: end;
+        justify-self: center;
+    }
+    .frame__tagline {
+        position: relative;
+        margin: 0 0 0 1rem;
+        padding: 0 0 0 1rem;
+        opacity: 0.5;
+    }
+    .frame__demos {
+        margin: 0;
+        grid-area: demos;
+        justify-self: end;
+        align-self: end;
+    }
+    .frame__links {
+        grid-area: links;
+        padding: 0;
+        justify-self: end;
+    }
+    .frame a,
+    .frame button {
+        pointer-events: auto;
+    }
 }
- #globalnav a{color: #000;font-size: 20px;}
+

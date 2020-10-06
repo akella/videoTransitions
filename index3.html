@@ -1,38 +1,57 @@
 <!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="utf-8">
+<html lang="en" class="no-js">
+    <head>
+        <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-
-		<title>Video Transition</title>
-	    <meta name="description" content="">
-
-		<link rel="stylesheet" href="css/style.css">
-	</head>
-	<body>
-        <div id="intro">
-            <button>play (or any user interaction)</button>
-        </div>
-        <div id="nav">
-            <a class="js-nav" href="#" data-nav="0">1111</a>
-            <a class="js-nav" href="#" data-nav="1">222</a>
-            <a class="js-nav" href="#" data-nav="2">333</a>
-        </div>
-        <div id="globalnav">
-            <a href="index1.html">demo 1</a>
-            <a href="index2.html">demo 2</a>
-            <a href="index3.html">demo 3</a>
-            <a href="index4.html">demo 4</a>
-            <a href="index5.html">demo 5</a> 
-        </div> 
-		<div id="canvas"></div>
-        <div class="wrapper">
-            <div class="plane" data-duration="1">
-                <video src="videos/1.mp4" data-sampler="firstTexture"></video>
-                <video src="videos/3.mp4" data-sampler="secondTexture"></video>
-                <video src="videos/4.mp4" data-sampler="thirdTexture"></video>
+        <title>WebGL Video Transitions | Demo 3 | Codrops</title>
+        <meta name="description" content="Some WebGL video transitions with different effects using curtain.js" />
+        <meta name="keywords" content="curtain.js, webgl, video transition, animation, shader, javascript, web design" />
+        <meta name="author" content="Codrops" />
+        <link rel="shortcut icon" href="favicon.ico">
+        <link rel="stylesheet" href="https://use.typekit.net/ylw1llk.css">
+        <link rel="stylesheet" type="text/css" href="css/style.css" />
+        <script>document.documentElement.className="js";var supportsCssVars=function(){var e,t=document.createElement("style");return t.innerHTML="root: { --tmp-var: bold; }",document.head.appendChild(t),e=!!(window.CSS&&window.CSS.supports&&window.CSS.supports("font-weight","var(--tmp-var)")),t.parentNode.removeChild(t),e};supportsCssVars()||alert("Please view this demo in a modern browser that supports CSS Variables.");</script>
+        <!--script src="//tympanus.net/codrops/adpacks/analytics.js"></script-->
+    </head>
+    <body class="demo-3">
+        <main>
+            <div class="frame">
+                <h1 class="frame__title">WebGL Video Transitions with <a href="">curtain.js</h1>
+                <nav class="frame__links">
+                    <a href="https://tympanus.net/Tutorials/Mirrors/">Previous demo</a>
+                    <a href="https://tympanus.net/codrops/?p=51333">Article</a>
+                    <a href="https://github.com/akella/videoTransitions">GitHub</a>
+                </nav>
+                <nav class="frame__demos">
+                    <span class="frame__demos-text">More demos: </span>
+                    <a href="index.html" class="frame__demo">1</a>
+                    <a href="index2.html" class="frame__demo">2</a>
+                    <a href="index3.html" class="frame__demo frame__demo--current">3</a>
+                    <a href="index4.html" class="frame__demo">4</a>
+                    <a href="index5.html" class="frame__demo">5</a>
+                </nav>
+                <button class="frame__button" id="intro"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60" width="60" height="60"><path d="M45.563 29.174l-22-15A1 1 0 0022 15v30a.999.999 0 001.563.826l22-15a1 1 0 000-1.652zM24 43.107V16.893L43.225 30 24 43.107z"/><path d="M30 0C13.458 0 0 13.458 0 30s13.458 30 30 30 30-13.458 30-30S46.542 0 30 0zm0 58C14.561 58 2 45.439 2 30S14.561 2 30 2s28 12.561 28 28-12.561 28-28 28z"/></svg></button>
+                <div class="frame__content">
+                    <h2 class="frame__content-title">Insubordinate</h2>
+                    <p class="frame__content-text">Select another video here:</p>
+                    <nav class="frame__switch" id="nav">
+                        <a class="frame__switch-item js-nav" data-nav="0">Wake up</a>
+                        <a class="frame__switch-item js-nav" data-nav="1">Rejoice</a>
+                        <a class="frame__switch-item js-nav" data-nav="2">Breathe</a>
+                    </nav>
+                </div>
             </div>
-        </div>
+            <div class="video">
+                <div id="canvas"></div>
+                <div class="wrapper">
+                    <div class="plane" data-duration="1">
+                        <video src="videos/3.mp4" data-sampler="firstTexture" preload="auto"></video>
+                        <video src="videos/2.mp4" data-sampler="secondTexture"></video>
+                        <video src="videos/1.mp4" data-sampler="thirdTexture"></video>
+                    </div>
+                </div>
+            </div>
+        </main>
         <script id="vert"  type="text">precision mediump float;
 
             // default mandatory variables
@@ -132,7 +151,7 @@
                 vec4 current = getTextureByIndex(uFrom,uvDisplaced1);
                 vec4 next = getTextureByIndex(uTo,uvDisplaced2);
 
-                gl_FragColor = mix(vec4(0.,0.,0.,1.),mix(current,next,progress), mask);
+                gl_FragColor = mix(vec4(0.,0.,0.,0),mix(current,next,progress), mask);
             }
         </script>
 		<script src="js/app.js"></script>
