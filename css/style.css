@@ -204,6 +204,10 @@ a:focus {
     text-decoration: none;
 }
 
+.frame__switch-item--current {
+    pointer-events: none;
+}
+
 .frame__content-text,
 .frame__switch {
     opacity: 0;
