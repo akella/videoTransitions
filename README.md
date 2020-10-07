@@ -2,7 +2,7 @@
 
 Some experimental video transitions using Curtain.js and shaders.
 
-![image]()
+![image](https://tympanus.net/codrops/wp-content/uploads/2020/10/VideoTransitions_featured-2.jpg)
 
 [Article on Codrops](https://tympanus.net/codrops/?p=51333)
 

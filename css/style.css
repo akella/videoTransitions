@@ -196,6 +196,8 @@ a:focus {
     font-size: 1.85rem;
     margin: 0 1rem;
     transition: opacity 0.3s;
+    display: inline-block;
+    margin-bottom: 1rem;
 }
 
 .frame__switch-item--current,
@@ -208,7 +210,6 @@ a:focus {
     pointer-events: none;
     opacity: 1;
 }
-
 
 .frame__content-text,
 .frame__switch {
@@ -303,4 +304,3 @@ a:focus {
         pointer-events: auto;
     }
 }
-
