@@ -154,8 +154,6 @@ window.addEventListener("load", () => {
     })
     .onRender(() => {
       timer += 0.001;
-      // console.log(multiTexturesPlane.uniforms.from.value,multiTexturesPlane.uniforms.transitionTimer.value);
-      // multiTexturesPlane.uniforms.transitionTimer.value = transitionTimer;
       multiTexturesPlane.uniforms.timer.value = timer;
     });
 });
