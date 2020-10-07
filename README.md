@@ -27,6 +27,7 @@ After that the demo should be available on http://localhost:1234.
 
 - Videos from [MixKit](https://mixkit.co/free-stock-video/) and [Coverr](https://coverr.co/)
 - Play icon by [Smashicons](https://www.flaticon.com/authors/smashicons)
+- [Curtains.js](https://www.curtainsjs.com/) by [Martin Laxenaire](https://twitter.com/webdesign_ml)
 
 ## Misc
 
