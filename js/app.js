@@ -87,7 +87,12 @@ window.addEventListener("load", () => {
       navElements.forEach(nav=>{
         nav.addEventListener('click',(event)=>{
           let to = event.target.getAttribute('data-nav');
-          if(isRunning || to===currentTexture) return;
+          if(isRunning || to==currentTexture) return;
+          var elems = document.querySelectorAll(".frame__switch-item");
+          [].forEach.call(elems, function(el) {
+              el.classList.remove("frame__switch-item--current");
+          });
+          event.target.classList.add('frame__switch-item--current')
           isRunning = true
           
           multiTexturesPlane.uniforms.to.value = to;
@@ -149,7 +154,7 @@ window.addEventListener("load", () => {
     })
     .onRender(() => {
       timer += 0.001;
-      console.log(multiTexturesPlane.uniforms.from.value,multiTexturesPlane.uniforms.transitionTimer.value);
+      // console.log(multiTexturesPlane.uniforms.from.value,multiTexturesPlane.uniforms.transitionTimer.value);
       // multiTexturesPlane.uniforms.transitionTimer.value = transitionTimer;
       multiTexturesPlane.uniforms.timer.value = timer;
     });
